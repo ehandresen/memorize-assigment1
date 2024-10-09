@@ -13,24 +13,38 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            ForEach(0..<count, id: \.self) { index in
-                CardView(emoji: emojis[index])
-            }
-            HStack {
-                Button("add") {
-                    if count < emojis.count {
-                        count += 1
-                    }
-                }
-                Spacer()
-                Button("remove") {
-                    if count > 1 {
-                        count -= 1
-                    }
-                }
-            }
+            cards
+            buttonAdjusters
         }
         .padding()
+    }
+    
+    var cards: some View {
+        ForEach(0..<count, id: \.self) { index in
+            CardView(emoji: emojis[index])
+        }
+    }
+    
+    var buttonAdjusters: some View {
+        HStack {
+            Button(action: {
+                if count > 1 {
+                    count -= 1
+                }
+            }, label: {
+                Image(systemName: "rectangle.stack.badge.minus")
+            })
+            Spacer()
+            Button(action: {
+                if count < emojis.count {
+                    count += 1
+                }
+            }, label: {
+                Image(systemName: "rectangle.stack.badge.plus")
+            })
+        }
+        .padding()
+        .font(.largeTitle)
     }
 }
 
