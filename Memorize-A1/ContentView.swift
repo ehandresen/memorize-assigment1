@@ -8,23 +8,60 @@
 import SwiftUI
 
 struct ContentView: View {
-    let emojis = ["💪", "🏋️‍♂️", "🤸‍♂️", "🏃‍♀️", "🚴‍♀️", "🏊‍♂️"]
+    let emojis = ["💪", "🏋️‍♂️", "🤸‍♂️", "🏃‍♀️", "🚴‍♀️", "🏊‍♂️", "💪", "🏋️‍♂️", "🤸‍♂️", "🏃‍♀️", "🚴‍♀️", "🏊‍♂️"]
+    let natureEmojis = ["🌳", "🌸", "🌞", "⛰️", "🌊", "🌈", "🌲", "🍂", "🌻", "🌵", "🌧️", "🌺"]
+    let foodEmojis = ["🍕", "🍔", "🍎", "🍓", "🍣", "🍩", "🍰", "🍌", "🍫", "🍇", "🍹", "🍿"]
+    
     @State var count = 4
     
     var body: some View {
         VStack {
-            cards
+            title
+            ScrollView {
+                cards
+            }
+            Spacer()
+            themeButtons
             buttonAdjusters
         }
         .padding()
     }
     
-    var cards: some View {
-        ForEach(0..<count, id: \.self) { index in
-            CardView(emoji: emojis[index])
-        }
+    var title: some View {
+        Text("Memorize")
+            .font(.largeTitle)
+            .fontWeight(.heavy)
     }
     
+    var cards: some View {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 150))]) {
+            ForEach(0..<count, id: \.self) { index in
+                CardView(emoji: emojis[index])
+                    .aspectRatio(2/3, contentMode: .fit)
+            }
+        }
+        .foregroundStyle(.green)
+        
+    }
+    
+    func ThemeButton(label: String) -> some View {
+        Button(label, action: {
+            print(label)
+        })
+    }
+    
+    var themeButtons: some View {
+        HStack {
+            ThemeButton(label: "theme 1")
+            Spacer()
+            ThemeButton(label: "theme 2")
+            Spacer()
+            ThemeButton(label: "theme 3")
+        }
+        
+    }
+    
+    // TODO: clean up code
     var buttonAdjusters: some View {
         HStack {
             Button(action: {
@@ -48,16 +85,28 @@ struct ContentView: View {
     }
 }
 
+// TODO: make card flippable by pressing on it
 struct CardView: View {
-    
-    var emoji: String = ""
+    let emoji: String
+    @State var isFlipped = false
     
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 10, style: .circular)
-                .fill(.red)
-            Text(emoji)
-                .font(.largeTitle)
+            if isFlipped {
+                RoundedRectangle(cornerRadius: 10, style: .circular)
+                    .fill(.blue)
+                    .strokeBorder(lineWidth: 4)
+            } else {
+                RoundedRectangle(cornerRadius: 10, style: .circular)
+                    .fill(.red)
+                    .strokeBorder(lineWidth: 4)
+                Text(emoji)
+                    .font(.largeTitle)
+            }
+            
+        }
+        .onTapGesture {
+            isFlipped.toggle()
         }
     }
 }
